@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PurchaseService } from './purchase.service'
 import { createPurchaseSchema, updatePurchaseSchema } from './purchase.validation'
+import { ZodError } from 'zod'
 
 const purchaseService = new PurchaseService()
 
@@ -56,17 +57,15 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     console.error('Error creating purchase:', error)
 
-    if (error instanceof Error) {
-      if (error.name === 'ZodError') {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'Validation failed',
-            errors: (error as any).errors,
-          },
-          { status: 400 }
-        )
-      }
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Validation failed',
+          errors: error.issues,
+        },
+        { status: 400 }
+      )
     }
 
     return NextResponse.json(
@@ -97,17 +96,15 @@ export async function PATCH(request: NextRequest) {
   } catch (error: unknown) {
     console.error('Error updating purchase:', error)
 
-    if (error instanceof Error) {
-      if (error.name === 'ZodError') {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'Validation failed',
-            errors: (error as any).errors,
-          },
-          { status: 400 }
-        )
-      }
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Validation failed',
+          errors: error.issues,
+        },
+        { status: 400 }
+      )
     }
 
     return NextResponse.json(

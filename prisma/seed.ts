@@ -4,7 +4,7 @@ const prisma = new PrismaClient()
 
 async function main() {
   // Create sample projects
-  const abcWarehouse = await prisma.project.upsert({
+  await prisma.project.upsert({
     where: { siteCode: 'ABC-001' },
     update: {},
     create: { 
@@ -14,7 +14,7 @@ async function main() {
     },
   })
 
-  const xyzFactory = await prisma.project.upsert({
+  await prisma.project.upsert({
     where: { siteCode: 'XYZ-002' },
     update: {},
     create: { 
@@ -24,7 +24,7 @@ async function main() {
     },
   })
 
-  const pqrShed = await prisma.project.upsert({
+  await prisma.project.upsert({
     where: { siteCode: 'PQR-003' },
     update: {},
     create: { 
@@ -35,19 +35,19 @@ async function main() {
   })
 
   // Create sample vendors
-  const xyzSteel = await prisma.vendor.upsert({
+  await prisma.vendor.upsert({
     where: { name: 'XYZ Steel' },
     update: {},
     create: { name: 'XYZ Steel' },
   })
 
-  const abcCement = await prisma.vendor.upsert({
+  await prisma.vendor.upsert({
     where: { name: 'ABC Cement' },
     update: {},
     create: { name: 'ABC Cement' },
   })
 
-  const pqrHardware = await prisma.vendor.upsert({
+  await prisma.vendor.upsert({
     where: { name: 'PQR Hardware' },
     update: {},
     create: { name: 'PQR Hardware' },

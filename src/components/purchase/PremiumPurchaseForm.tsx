@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
 import Select from '@/components/common/Select'
 import { formatCurrency } from '@/lib/utils'
-import { Trash2, Plus, Calendar } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Trash2, Plus } from 'lucide-react'
 
 interface Project {
   id: string
@@ -58,8 +57,6 @@ export default function PremiumPurchaseForm() {
     { id: '1', itemName: '', description: '', quantity: 0, unit: 'PCS', rate: 0, amount: 0 },
   ])
 
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-
   useEffect(() => {
     async function fetchData() {
       try {
@@ -81,13 +78,11 @@ export default function PremiumPurchaseForm() {
     fetchData()
   }, [])
 
-  useEffect(() => {
+  const selectedProject = useMemo(() => {
     if (formData.projectId) {
-      const project = projects.find(p => p.id === formData.projectId)
-      setSelectedProject(project || null)
-    } else {
-      setSelectedProject(null)
+      return projects.find(p => p.id === formData.projectId) || null
     }
+    return null
   }, [formData.projectId, projects])
 
   const calculateTotal = () => {
@@ -164,7 +159,7 @@ export default function PremiumPurchaseForm() {
       } else {
         setError(data.message || 'Failed to create project')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create project')
     }
   }
@@ -195,7 +190,7 @@ export default function PremiumPurchaseForm() {
       } else {
         setError(data.message || 'Failed to create vendor')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create vendor')
     }
   }
@@ -255,7 +250,7 @@ export default function PremiumPurchaseForm() {
       } else {
         setError(data.message || 'Failed to create purchase')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create purchase')
     } finally {
       setLoading(false)

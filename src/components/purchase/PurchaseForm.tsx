@@ -127,7 +127,7 @@ export default function PurchaseForm() {
       } else {
         setError(data.message || 'Failed to create project')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create project')
     }
   }
@@ -156,7 +156,7 @@ export default function PurchaseForm() {
       } else {
         setError(data.message || 'Failed to create vendor')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create vendor')
     }
   }
@@ -212,7 +212,7 @@ export default function PurchaseForm() {
       } else {
         setError(data.message || 'Failed to create purchase')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create purchase')
     } finally {
       setLoading(false)

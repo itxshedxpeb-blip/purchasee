@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, PlusCircle, FileText, FolderOpen, Building2, Menu, X } from 'lucide-react'
@@ -18,6 +18,7 @@ export default function GlassNavbar() {
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const previousPathnameRef = useRef<string | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,7 +31,10 @@ export default function GlassNavbar() {
 
   // Close mobile menu when route changes
   useEffect(() => {
-    setIsMobileMenuOpen(false)
+    if (previousPathnameRef.current !== null && previousPathnameRef.current !== pathname) {
+      setIsMobileMenuOpen(false)
+    }
+    previousPathnameRef.current = pathname
   }, [pathname])
 
   // Prevent body scroll when mobile menu is open

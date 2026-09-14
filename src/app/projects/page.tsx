@@ -92,7 +92,7 @@ export default function ProjectsPage() {
       } else {
         setError(data.message || 'Failed to create project')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create project')
     } finally {
       setCreating(false)

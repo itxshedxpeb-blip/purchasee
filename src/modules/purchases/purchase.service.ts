@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
-import { CreatePurchaseInput, UpdatePurchaseInput, PurchaseItemInput } from './purchase.validation'
+import { CreatePurchaseInput, UpdatePurchaseInput } from './purchase.validation'
 
 export class PurchaseService {
   async generatePurchaseNumber(): Promise<string> {

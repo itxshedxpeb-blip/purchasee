@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/common/Card'
 import { formatCurrency, formatShortDate } from '@/lib/utils'
-import LoadingState from '@/components/common/LoadingState'
-import { StatCardSkeleton, TableRowSkeleton } from '@/components/common/SkeletonCard'
-import { TrendingUp, ShoppingCart, FolderOpen, Building2, ArrowRight } from 'lucide-react'
+import { StatCardSkeleton } from '@/components/common/SkeletonCard'
+import { TrendingUp, ShoppingCart, FolderOpen, Building2 } from 'lucide-react'
 import Button from '@/components/common/Button'
 
 interface DashboardStats {
@@ -41,6 +41,7 @@ interface DashboardStats {
 }
 
 export default function Dashboard() {
+  const router = useRouter()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -297,15 +298,15 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <Button fullWidth size="lg" onClick={() => window.location.href = '/new-purchase'}>
+        <Button fullWidth size="lg" onClick={() => router.push('/new-purchase')}>
           <ShoppingCart className="h-5 w-5" />
           <span className="ml-2">New Purchase</span>
         </Button>
-        <Button variant="secondary" fullWidth size="lg" onClick={() => window.location.href = '/projects'}>
+        <Button variant="secondary" fullWidth size="lg" onClick={() => router.push('/projects')}>
           <FolderOpen className="h-5 w-5" />
           <span className="ml-2">View Projects</span>
         </Button>
-        <Button variant="secondary" fullWidth size="lg" onClick={() => window.location.href = '/vendors'}>
+        <Button variant="secondary" fullWidth size="lg" onClick={() => router.push('/vendors')}>
           <Building2 className="h-5 w-5" />
           <span className="ml-2">View Vendors</span>
         </Button>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ProjectService } from './project.service'
 import { createProjectSchema, updateProjectSchema } from './project.validation'
+import { ZodError } from 'zod'
 
 const projectService = new ProjectService()
 
@@ -45,17 +46,15 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     console.error('Error creating project:', error)
 
-    if (error instanceof Error) {
-      if (error.name === 'ZodError') {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'Validation failed',
-            errors: (error as any).errors,
-          },
-          { status: 400 }
-        )
-      }
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Validation failed',
+          errors: error.issues,
+        },
+        { status: 400 }
+      )
     }
 
     return NextResponse.json(
@@ -86,17 +85,15 @@ export async function PATCH(request: NextRequest) {
   } catch (error: unknown) {
     console.error('Error updating project:', error)
 
-    if (error instanceof Error) {
-      if (error.name === 'ZodError') {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'Validation failed',
-            errors: (error as any).errors,
-          },
-          { status: 400 }
-        )
-      }
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Validation failed',
+          errors: error.issues,
+        },
+        { status: 400 }
+      )
     }
 
     return NextResponse.json(

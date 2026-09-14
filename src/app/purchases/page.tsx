@@ -34,16 +34,6 @@ interface Purchase {
   totalAmount: number
 }
 
-interface PurchasesResponse {
-  purchases: Purchase[]
-  pagination: {
-    page: number
-    limit: number
-    total: number
-    totalPages: number
-  }
-}
-
 export default function PurchasesPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -96,7 +86,7 @@ export default function PurchasesPage() {
     }
 
     fetchData()
-  }, [filters, pagination.page])
+  }, [filters, pagination.page, pagination.limit])
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters({ ...filters, [key]: value })

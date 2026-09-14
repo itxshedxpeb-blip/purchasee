@@ -74,7 +74,7 @@ export default function VendorsPage() {
       } else {
         setError(data.message || 'Failed to create vendor')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create vendor')
     } finally {
       setCreating(false)

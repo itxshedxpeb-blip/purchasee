@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { VendorService } from './vendor.service'
 import { createVendorSchema, updateVendorSchema } from './vendor.validation'
+import { ZodError } from 'zod'
 
 const vendorService = new VendorService()
 
@@ -45,17 +46,15 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     console.error('Error creating vendor:', error)
 
-    if (error instanceof Error) {
-      if (error.name === 'ZodError') {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'Validation failed',
-            errors: (error as any).errors,
-          },
-          { status: 400 }
-        )
-      }
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Validation failed',
+          errors: error.issues,
+        },
+        { status: 400 }
+      )
     }
 
     return NextResponse.json(
@@ -86,17 +85,15 @@ export async function PATCH(request: NextRequest) {
   } catch (error: unknown) {
     console.error('Error updating vendor:', error)
 
-    if (error instanceof Error) {
-      if (error.name === 'ZodError') {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'Validation failed',
-            errors: (error as any).errors,
-          },
-          { status: 400 }
-        )
-      }
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Validation failed',
+          errors: error.issues,
+        },
+        { status: 400 }
+      )
     }
 
     return NextResponse.json(
