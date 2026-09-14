@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { Prisma } from '@prisma/client'
 
 export class ReportsService {
   async getProjectReports() {
@@ -65,7 +66,7 @@ export class ReportsService {
   }) {
     const { projectId, vendorId, fromDate, toDate } = filters
 
-    const where: any = {}
+    const where: Prisma.PurchaseWhereInput = {}
 
     if (projectId) {
       where.projectId = projectId

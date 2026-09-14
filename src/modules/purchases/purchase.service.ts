@@ -108,7 +108,7 @@ export class PurchaseService {
       amount: item.quantity * item.rate,
     }))
 
-    const subtotal = itemsWithAmounts.reduce((sum, item) => sum + item.amount, 0)
+    const subtotal = itemsWithAmounts.reduce((sum: number, item) => sum + (item.amount as number), 0)
     const totalAmount = subtotal
 
     // Use transaction to ensure atomicity
@@ -171,7 +171,7 @@ export class PurchaseService {
         rate: item.rate,
         amount: item.quantity * item.rate,
       }))
-      subtotal = itemsWithAmounts.reduce((sum, item) => sum + item.amount, 0)
+      subtotal = itemsWithAmounts.reduce((sum: number, item) => sum + (item.amount as number), 0)
     }
 
     const totalAmount = subtotal

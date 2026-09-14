@@ -42,22 +42,24 @@ export async function POST(request: NextRequest) {
       { success: true, data: vendor },
       { status: 201 }
     )
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating vendor:', error)
 
-    if (error.name === 'ZodError') {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Validation failed',
-          errors: error.errors,
-        },
-        { status: 400 }
-      )
+    if (error instanceof Error) {
+      if (error.name === 'ZodError') {
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Validation failed',
+            errors: (error as any).errors,
+          },
+          { status: 400 }
+        )
+      }
     }
 
     return NextResponse.json(
-      { success: false, message: error.message || 'Vendor could not be created' },
+      { success: false, message: error instanceof Error ? error.message : 'Vendor could not be created' },
       { status: 400 }
     )
   }
@@ -81,22 +83,24 @@ export async function PATCH(request: NextRequest) {
     const vendor = await vendorService.updateVendor(id, validatedData)
 
     return NextResponse.json({ success: true, data: vendor })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating vendor:', error)
 
-    if (error.name === 'ZodError') {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Validation failed',
-          errors: error.errors,
-        },
-        { status: 400 }
-      )
+    if (error instanceof Error) {
+      if (error.name === 'ZodError') {
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Validation failed',
+            errors: (error as any).errors,
+          },
+          { status: 400 }
+        )
+      }
     }
 
     return NextResponse.json(
-      { success: false, message: error.message || 'Vendor could not be updated' },
+      { success: false, message: error instanceof Error ? error.message : 'Vendor could not be updated' },
       { status: 400 }
     )
   }
@@ -117,10 +121,10 @@ export async function DELETE(request: NextRequest) {
     await vendorService.deleteVendor(id)
 
     return NextResponse.json({ success: true, message: 'Vendor deleted successfully' })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting vendor:', error)
     return NextResponse.json(
-      { success: false, message: error.message || 'Vendor could not be deleted' },
+      { success: false, message: error instanceof Error ? error.message : 'Vendor could not be deleted' },
       { status: 400 }
     )
   }

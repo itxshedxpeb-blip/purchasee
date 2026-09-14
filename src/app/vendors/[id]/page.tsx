@@ -40,7 +40,7 @@ export default function VendorDetailsPage() {
         if (data.success) {
           const vendorData = data.data
           const totalAmount = vendorData.purchases.reduce(
-            (sum: number, p: any) => sum + Number(p.totalAmount),
+            (sum: number, p: { totalAmount: number }) => sum + Number(p.totalAmount),
             0
           )
 
@@ -49,7 +49,7 @@ export default function VendorDetailsPage() {
             name: vendorData.name,
             purchaseCount: vendorData.purchases.length,
             totalAmount,
-            purchases: vendorData.purchases.map((p: any) => ({
+            purchases: vendorData.purchases.map((p: { id: string; purchaseNumber: string; purchaseDate: string; project: { name: string }; deliveryLocation: string; totalAmount: number }) => ({
               id: p.id,
               purchaseNumber: p.purchaseNumber,
               purchaseDate: p.purchaseDate,

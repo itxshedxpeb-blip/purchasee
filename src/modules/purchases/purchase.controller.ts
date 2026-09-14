@@ -53,22 +53,24 @@ export async function POST(request: NextRequest) {
       { success: true, data: purchase },
       { status: 201 }
     )
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating purchase:', error)
 
-    if (error.name === 'ZodError') {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Validation failed',
-          errors: error.errors,
-        },
-        { status: 400 }
-      )
+    if (error instanceof Error) {
+      if (error.name === 'ZodError') {
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Validation failed',
+            errors: (error as any).errors,
+          },
+          { status: 400 }
+        )
+      }
     }
 
     return NextResponse.json(
-      { success: false, message: error.message || 'Purchase could not be created' },
+      { success: false, message: error instanceof Error ? error.message : 'Purchase could not be created' },
       { status: 400 }
     )
   }
@@ -92,22 +94,24 @@ export async function PATCH(request: NextRequest) {
     const purchase = await purchaseService.updatePurchase(id, validatedData)
 
     return NextResponse.json({ success: true, data: purchase })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating purchase:', error)
 
-    if (error.name === 'ZodError') {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Validation failed',
-          errors: error.errors,
-        },
-        { status: 400 }
-      )
+    if (error instanceof Error) {
+      if (error.name === 'ZodError') {
+        return NextResponse.json(
+          {
+            success: false,
+            message: 'Validation failed',
+            errors: (error as any).errors,
+          },
+          { status: 400 }
+        )
+      }
     }
 
     return NextResponse.json(
-      { success: false, message: error.message || 'Purchase could not be updated' },
+      { success: false, message: error instanceof Error ? error.message : 'Purchase could not be updated' },
       { status: 400 }
     )
   }
@@ -128,10 +132,10 @@ export async function DELETE(request: NextRequest) {
     await purchaseService.deletePurchase(id)
 
     return NextResponse.json({ success: true, message: 'Purchase deleted successfully' })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting purchase:', error)
     return NextResponse.json(
-      { success: false, message: error.message || 'Purchase could not be deleted' },
+      { success: false, message: error instanceof Error ? error.message : 'Purchase could not be deleted' },
       { status: 400 }
     )
   }

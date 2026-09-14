@@ -11,7 +11,9 @@ import { Card, CardContent } from '@/components/common/Card'
 
 interface Project {
   id: string
+  siteCode: string
   name: string
+  clientName: string
   _count: {
     purchases: number
   }

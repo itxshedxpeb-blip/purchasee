@@ -101,6 +101,7 @@ export class VendorService {
       include: {
         purchases: {
           include: {
+            project: true,
             items: true,
           },
         },
