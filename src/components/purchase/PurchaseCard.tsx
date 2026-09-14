@@ -21,46 +21,46 @@ export default function PurchaseCard({ purchase, onClick }: PurchaseCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer"
+      className="bg-white rounded-xl border border-gray-200 p-3 sm:p-5 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer"
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-            <FileText className="h-5 w-5 text-blue-600" />
+      <div className="flex items-start justify-between mb-3 sm:mb-4">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 mr-2">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+            <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
           </div>
-          <div>
-            <p className="font-semibold text-gray-900">{purchase.purchaseNumber}</p>
-            <p className="text-sm text-gray-500">{formatShortDate(purchase.purchaseDate)}</p>
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">{purchase.purchaseNumber}</p>
+            <p className="text-xs sm:text-sm text-gray-500">{formatShortDate(purchase.purchaseDate)}</p>
           </div>
         </div>
-        <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-          <MoreVertical className="h-5 w-5 text-gray-400" />
+        <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0 min-h-[40px] min-w-[40px]">
+          <MoreVertical className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
         </button>
       </div>
 
-      <div className="space-y-2 mb-4">
-        <div className="flex justify-between text-sm">
+      <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
+        <div className="flex justify-between text-xs sm:text-sm">
           <span className="text-gray-500">Project</span>
-          <span className="font-medium text-gray-900">{purchase.project.name}</span>
+          <span className="font-medium text-gray-900 truncate ml-2">{purchase.project.name}</span>
         </div>
-        <div className="flex justify-between text-sm">
+        <div className="flex justify-between text-xs sm:text-sm">
           <span className="text-gray-500">Vendor</span>
-          <span className="font-medium text-gray-900">{purchase.vendor.name}</span>
+          <span className="font-medium text-gray-900 truncate ml-2">{purchase.vendor.name}</span>
         </div>
-        <div className="flex justify-between text-sm">
+        <div className="flex justify-between text-xs sm:text-sm">
           <span className="text-gray-500">Delivery</span>
-          <span className="font-medium text-gray-900 truncate max-w-[150px]">{purchase.deliveryLocation}</span>
+          <span className="font-medium text-gray-900 truncate ml-2">{purchase.deliveryLocation}</span>
         </div>
         {purchase.invoiceNumber && (
-          <div className="flex justify-between text-sm">
+          <div className="flex justify-between text-xs sm:text-sm">
             <span className="text-gray-500">Invoice</span>
-            <span className="font-medium text-gray-900">{purchase.invoiceNumber}</span>
+            <span className="font-medium text-gray-900 truncate ml-2">{purchase.invoiceNumber}</span>
           </div>
         )}
       </div>
 
-      <div className="pt-3 border-t border-gray-100">
-        <p className="text-lg font-bold text-blue-600">{formatCurrency(purchase.totalAmount)}</p>
+      <div className="pt-2 sm:pt-3 border-t border-gray-100">
+        <p className="text-base sm:text-lg font-bold text-blue-600">{formatCurrency(purchase.totalAmount)}</p>
       </div>
     </div>
   )

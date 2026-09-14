@@ -7,6 +7,7 @@ import EmptyState from '@/components/common/EmptyState'
 import { Building2, Plus } from 'lucide-react'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
+import Dialog from '@/components/common/Dialog'
 import { Card, CardContent } from '@/components/common/Card'
 
 interface Vendor {
@@ -112,22 +113,22 @@ export default function VendorsPage() {
           onAction={() => router.push('/new-purchase')}
         />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {vendors.map((vendor) => (
             <Card
               key={vendor.id}
               onClick={() => handleVendorClick(vendor.id)}
               className="hover:shadow-lg cursor-pointer transition-all duration-200 hover:border-orange-300"
             >
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl flex items-center justify-center">
-                    <Building2 className="h-6 w-6 text-orange-600" />
+              <CardContent className="p-4 sm:p-6">
+                <div className="flex items-start justify-between mb-3 sm:mb-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-orange-600" />
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">{vendor.name}</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 truncate">{vendor.name}</h3>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <div className="flex justify-between text-xs sm:text-sm">
                     <span className="text-gray-500">Purchases</span>
                     <span className="font-medium text-gray-900">{vendor._count.purchases}</span>
                   </div>
@@ -139,50 +140,50 @@ export default function VendorsPage() {
       )}
 
       {/* Create Vendor Dialog */}
-      {showCreateDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setShowCreateDialog(false)}
-          />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 page-transition">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Create Vendor</h3>
-            
-            {error && (
-              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-                <div className="w-5 h-5 bg-red-600 rounded-full flex-shrink-0 flex items-center justify-center">
-                  <span className="text-white text-xs">!</span>
-                </div>
-                <p className="text-sm text-red-800 flex-1">{error}</p>
-              </div>
-            )}
-
-            <Input
-              label="Vendor Name"
-              value={newVendorName}
-              onChange={(e) => setNewVendorName(e.target.value)}
-              placeholder="Enter vendor name"
-            />
-            
-            <div className="flex justify-end gap-4 mt-6">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowCreateDialog(false)
-                  setNewVendorName('')
-                  setError('')
-                }}
-                disabled={creating}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleCreateVendor} isLoading={creating}>
-                Create Vendor
-              </Button>
+      <Dialog
+        isOpen={showCreateDialog}
+        onClose={() => {
+          setShowCreateDialog(false)
+          setNewVendorName('')
+          setError('')
+        }}
+        title="Create Vendor"
+        size="sm"
+      >
+        {error && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+            <div className="w-5 h-5 bg-red-600 rounded-full flex-shrink-0 flex items-center justify-center">
+              <span className="text-white text-xs">!</span>
             </div>
+            <p className="text-sm text-red-800 flex-1">{error}</p>
           </div>
+        )}
+
+        <Input
+          label="Vendor Name"
+          value={newVendorName}
+          onChange={(e) => setNewVendorName(e.target.value)}
+          placeholder="Enter vendor name"
+        />
+
+        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-6">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowCreateDialog(false)
+              setNewVendorName('')
+              setError('')
+            }}
+            disabled={creating}
+            fullWidth
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleCreateVendor} isLoading={creating} fullWidth>
+            Create Vendor
+          </Button>
         </div>
-      )}
+      </Dialog>
 
       {/* Success Toast */}
       {success && (

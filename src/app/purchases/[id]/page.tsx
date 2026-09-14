@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import LoadingState from '@/components/common/LoadingState'
 import Button from '@/components/common/Button'
+import Dialog from '@/components/common/Dialog'
 import { ArrowLeft, Edit2, Trash2, Package } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/common/Card'
 import { useToast } from '@/components/common/ToastProvider'
@@ -101,23 +102,24 @@ export default function PurchaseDetailsPage() {
   }
 
   return (
-    <div className="space-y-6 pb-24 md:pb-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-4">
+    <div className="space-y-4 sm:space-y-6 pb-24 md:pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => router.back()}
             aria-label="Go back"
+            className="min-h-[44px] min-w-[44px] flex-shrink-0"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Purchase #{purchase.purchaseNumber}</h1>
-            <p className="text-gray-500 mt-1">{formatDate(purchase.purchaseDate)}</p>
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 truncate">Purchase #{purchase.purchaseNumber}</h1>
+            <p className="text-gray-500 mt-1 text-sm sm:text-base">{formatDate(purchase.purchaseDate)}</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-shrink-0">
           <Button
             variant="secondary"
             onClick={() => router.push(`/purchases/${purchase.id}/edit`)}
@@ -135,37 +137,37 @@ export default function PurchaseDetailsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Purchase Details */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Purchase Details</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Project</p>
-                  <p className="font-medium text-gray-900">{purchase.project.name}</p>
+                  <p className="text-xs sm:text-sm text-gray-500 mb-1">Project</p>
+                  <p className="font-medium text-gray-900 text-sm sm:text-base truncate">{purchase.project.name}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Vendor</p>
-                  <p className="font-medium text-gray-900">{purchase.vendor.name}</p>
+                  <p className="text-xs sm:text-sm text-gray-500 mb-1">Vendor</p>
+                  <p className="font-medium text-gray-900 text-sm sm:text-base truncate">{purchase.vendor.name}</p>
                 </div>
                 <div className="md:col-span-2">
-                  <p className="text-sm text-gray-500 mb-1">Delivery Location</p>
-                  <p className="font-medium text-gray-900">{purchase.deliveryLocation}</p>
+                  <p className="text-xs sm:text-sm text-gray-500 mb-1">Delivery Location</p>
+                  <p className="font-medium text-gray-900 text-sm sm:text-base">{purchase.deliveryLocation}</p>
                 </div>
                 {purchase.invoiceNumber && (
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Invoice Number</p>
-                    <p className="font-medium text-gray-900">{purchase.invoiceNumber}</p>
+                    <p className="text-xs sm:text-sm text-gray-500 mb-1">Invoice Number</p>
+                    <p className="font-medium text-gray-900 text-sm sm:text-base">{purchase.invoiceNumber}</p>
                   </div>
                 )}
                 {purchase.remarks && (
                   <div className="md:col-span-2">
-                    <p className="text-sm text-gray-500 mb-1">Remarks</p>
-                    <p className="font-medium text-gray-900">{purchase.remarks}</p>
+                    <p className="text-xs sm:text-sm text-gray-500 mb-1">Remarks</p>
+                    <p className="font-medium text-gray-900 text-sm sm:text-base">{purchase.remarks}</p>
                   </div>
                 )}
               </div>
@@ -179,24 +181,24 @@ export default function PurchaseDetailsPage() {
             </CardHeader>
             <CardContent>
               {/* Mobile Cards */}
-              <div className="md:hidden space-y-4">
+              <div className="md:hidden space-y-3">
                 {purchase.items.map((item) => (
-                  <div key={item.id} className="border border-gray-200 rounded-xl p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                          <Package className="h-5 w-5 text-blue-600" />
+                  <div key={item.id} className="border border-gray-200 rounded-xl p-3 sm:p-4">
+                    <div className="flex items-start justify-between mb-2 sm:mb-3">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 mr-2">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Package className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
                         </div>
-                        <div>
-                          <p className="font-medium text-gray-900">{item.itemName}</p>
+                        <div className="min-w-0">
+                          <p className="font-medium text-gray-900 text-sm sm:text-base truncate">{item.itemName}</p>
                           {item.description && (
-                            <p className="text-sm text-gray-500">{item.description}</p>
+                            <p className="text-xs sm:text-sm text-gray-500 truncate">{item.description}</p>
                           )}
                         </div>
                       </div>
-                      <p className="font-bold text-blue-600">{formatCurrency(item.amount)}</p>
+                      <p className="font-bold text-blue-600 text-sm sm:text-base flex-shrink-0">{formatCurrency(item.amount)}</p>
                     </div>
-                    <div className="space-y-2 text-sm">
+                    <div className="space-y-1 text-xs sm:text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-500">Quantity</span>
                         <span className="text-gray-900">{item.quantity} {item.unit}</span>
@@ -211,27 +213,27 @@ export default function PurchaseDetailsPage() {
               </div>
 
               {/* Desktop Table */}
-              <div className="hidden md:block overflow-x-auto">
-                <table className="w-full">
+              <div className="hidden md:block overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                <table className="w-full min-w-[700px]">
                   <thead>
                     <tr className="border-b border-gray-200">
-                      <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Item</th>
-                      <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Description</th>
-                      <th className="text-right py-4 px-6 text-sm font-semibold text-gray-600 w-24">Quantity</th>
-                      <th className="text-right py-4 px-6 text-sm font-semibold text-gray-600 w-20">Unit</th>
-                      <th className="text-right py-4 px-6 text-sm font-semibold text-gray-600 w-32">Rate</th>
-                      <th className="text-right py-4 px-6 text-sm font-semibold text-gray-600 w-40">Amount</th>
+                      <th className="text-left py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600">Item</th>
+                      <th className="text-left py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600">Description</th>
+                      <th className="text-right py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600 w-24">Quantity</th>
+                      <th className="text-right py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600 w-20">Unit</th>
+                      <th className="text-right py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600 w-32">Rate</th>
+                      <th className="text-right py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600 w-40">Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     {purchase.items.map((item) => (
                       <tr key={item.id} className="border-b border-gray-100">
-                        <td className="py-4 px-6 text-sm text-gray-900">{item.itemName}</td>
-                        <td className="py-4 px-6 text-sm text-gray-600">{item.description || '-'}</td>
-                        <td className="py-4 px-6 text-sm text-gray-600 text-right">{item.quantity}</td>
-                        <td className="py-4 px-6 text-sm text-gray-600 text-right">{item.unit}</td>
-                        <td className="py-4 px-6 text-sm text-gray-600 text-right">{formatCurrency(item.rate)}</td>
-                        <td className="py-4 px-6 text-sm font-semibold text-gray-900 text-right">
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-900">{item.itemName}</td>
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-600">{item.description || '-'}</td>
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-600 text-right">{item.quantity}</td>
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-600 text-right">{item.unit}</td>
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-600 text-right">{formatCurrency(item.rate)}</td>
+                        <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-900 text-right">
                           {formatCurrency(item.amount)}
                         </td>
                       </tr>
@@ -252,13 +254,13 @@ export default function PurchaseDetailsPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-500">Subtotal</span>
-                  <span className="font-medium text-gray-900">{formatCurrency(purchase.subtotal)}</span>
+                  <span className="text-gray-500 text-sm sm:text-base">Subtotal</span>
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">{formatCurrency(purchase.subtotal)}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-gray-900">Total</span>
-                    <span className="text-2xl font-bold text-blue-600">{formatCurrency(purchase.totalAmount)}</span>
+                    <span className="text-lg sm:text-xl font-semibold text-gray-900">Total</span>
+                    <span className="text-xl sm:text-2xl font-bold text-blue-600">{formatCurrency(purchase.totalAmount)}</span>
                   </div>
                 </div>
               </div>
@@ -290,36 +292,34 @@ export default function PurchaseDetailsPage() {
       </div>
 
       {/* Delete Confirmation Dialog */}
-      {showDeleteDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+      <Dialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        title="Delete Purchase"
+        size="sm"
+      >
+        <p className="text-gray-600 mb-6 text-sm sm:text-base">
+          Are you sure you want to delete this purchase? This action cannot be undone.
+        </p>
+        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
+          <Button
+            variant="secondary"
             onClick={() => setShowDeleteDialog(false)}
-          />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 page-transition">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Delete Purchase</h3>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this purchase? This action cannot be undone.
-            </p>
-            <div className="flex justify-end gap-4">
-              <Button
-                variant="secondary"
-                onClick={() => setShowDeleteDialog(false)}
-                disabled={deleting}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="danger"
-                onClick={handleDelete}
-                isLoading={deleting}
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
+            disabled={deleting}
+            fullWidth
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+            isLoading={deleting}
+            fullWidth
+          >
+            Delete
+          </Button>
         </div>
-      )}
+      </Dialog>
     </div>
   )
 }

@@ -124,19 +124,19 @@ export default function Dashboard() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
         {summaryCards.map((card) => {
           const Icon = card.icon
           return (
             <Card key={card.title} className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-500 mb-1">{card.title}</p>
-                    <p className="text-2xl md:text-3xl font-bold text-gray-900">{card.value}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-gray-500 mb-1 truncate">{card.title}</p>
+                    <p className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 truncate">{card.value}</p>
                   </div>
-                  <div className={`w-12 h-12 ${card.bgColor} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <Icon className="h-6 w-6 bg-gradient-to-br text-gray-700" />
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 ${card.bgColor} rounded-xl flex items-center justify-center flex-shrink-0 ml-3`}>
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6 bg-gradient-to-br text-gray-700" />
                   </div>
                 </div>
               </CardContent>
@@ -145,7 +145,7 @@ export default function Dashboard() {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Project-wise Purchase */}
         <Card>
           <CardHeader>
@@ -155,14 +155,14 @@ export default function Dashboard() {
             {stats.projectTotals.length === 0 ? (
               <div className="text-center py-8 text-gray-500">No projects yet</div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {stats.projectTotals.slice(0, 5).map((project) => (
                   <div key={project.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">{project.name}</p>
+                    <div className="flex-1 min-w-0 mr-3">
+                      <p className="font-medium text-gray-900 truncate">{project.name}</p>
                       <p className="text-sm text-gray-500">{project.purchaseCount} purchases</p>
                     </div>
-                    <p className="font-semibold text-gray-900">{formatCurrency(project.totalAmount)}</p>
+                    <p className="font-semibold text-gray-900 text-sm sm:text-base flex-shrink-0">{formatCurrency(project.totalAmount)}</p>
                   </div>
                 ))}
               </div>
@@ -179,14 +179,14 @@ export default function Dashboard() {
             {stats.vendorTotals.length === 0 ? (
               <div className="text-center py-8 text-gray-500">No vendors yet</div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {stats.vendorTotals.slice(0, 5).map((vendor) => (
                   <div key={vendor.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">{vendor.name}</p>
+                    <div className="flex-1 min-w-0 mr-3">
+                      <p className="font-medium text-gray-900 truncate">{vendor.name}</p>
                       <p className="text-sm text-gray-500">{vendor.purchaseCount} purchases</p>
                     </div>
-                    <p className="font-semibold text-gray-900">{formatCurrency(vendor.totalAmount)}</p>
+                    <p className="font-semibold text-gray-900 text-sm sm:text-base flex-shrink-0">{formatCurrency(vendor.totalAmount)}</p>
                   </div>
                 ))}
               </div>
@@ -206,24 +206,24 @@ export default function Dashboard() {
           ) : (
             <>
               {/* Mobile Cards */}
-              <div className="md:hidden space-y-4">
+              <div className="md:hidden space-y-3">
                 {stats.recentPurchases.map((purchase) => (
-                  <div key={purchase.id} className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <p className="font-semibold text-gray-900">{purchase.purchaseNumber}</p>
-                        <p className="text-sm text-gray-500">{formatShortDate(purchase.purchaseDate)}</p>
+                  <div key={purchase.id} className="border border-gray-200 rounded-xl p-3 sm:p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-start justify-between mb-2 sm:mb-3">
+                      <div className="min-w-0 flex-1 mr-3">
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">{purchase.purchaseNumber}</p>
+                        <p className="text-xs sm:text-sm text-gray-500">{formatShortDate(purchase.purchaseDate)}</p>
                       </div>
-                      <p className="font-bold text-blue-600">{formatCurrency(purchase.totalAmount)}</p>
+                      <p className="font-bold text-blue-600 text-sm sm:text-base flex-shrink-0">{formatCurrency(purchase.totalAmount)}</p>
                     </div>
-                    <div className="space-y-1 text-sm">
+                    <div className="space-y-1 text-xs sm:text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-500">Project</span>
-                        <span className="text-gray-900">{purchase.project}</span>
+                        <span className="text-gray-900 truncate ml-2">{purchase.project}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-500">Vendor</span>
-                        <span className="text-gray-900">{purchase.vendor}</span>
+                        <span className="text-gray-900 truncate ml-2">{purchase.vendor}</span>
                       </div>
                     </div>
                   </div>
@@ -271,19 +271,19 @@ export default function Dashboard() {
           {stats.monthlyTotals.every((m) => m.totalAmount === 0) ? (
             <div className="text-center py-8 text-gray-500">No data available</div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {stats.monthlyTotals.map((month) => (
-                <div key={month.month} className="flex items-center gap-4">
-                  <div className="w-16 text-sm font-medium text-gray-600">{month.monthName}</div>
-                  <div className="flex-1 bg-gray-100 rounded-full h-10 overflow-hidden">
+                <div key={month.month} className="flex items-center gap-2 sm:gap-4">
+                  <div className="w-12 sm:w-16 text-xs sm:text-sm font-medium text-gray-600 flex-shrink-0">{month.monthName}</div>
+                  <div className="flex-1 bg-gray-100 rounded-full h-8 sm:h-10 overflow-hidden min-w-0">
                     <div
-                      className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full flex items-center justify-end pr-4 transition-all duration-500"
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full flex items-center justify-end pr-2 sm:pr-4 transition-all duration-500"
                       style={{
                         width: `${Math.min((month.totalAmount / Math.max(...stats.monthlyTotals.map(m => m.totalAmount))) * 100, 100)}%`,
                       }}
                     >
                       {month.totalAmount > 0 && (
-                        <span className="text-xs font-semibold text-white">
+                        <span className="text-[10px] sm:text-xs font-semibold text-white truncate">
                           {formatCurrency(month.totalAmount)}
                         </span>
                       )}

@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, KeyboardEvent } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -26,6 +26,12 @@ export default function Dialog({ isOpen, onClose, title, children, size = 'md', 
     }
   }, [isOpen])
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose()
+    }
+  }
+
   if (!isOpen) return null
 
   const sizes = {
@@ -36,7 +42,10 @@ export default function Dialog({ isOpen, onClose, title, children, size = 'md', 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+      onKeyDown={handleKeyDown}
+    >
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
@@ -44,23 +53,23 @@ export default function Dialog({ isOpen, onClose, title, children, size = 'md', 
       />
       <div
         className={cn(
-          'relative bg-white rounded-2xl shadow-2xl w-full mx-4 page-transition',
+          'relative bg-white rounded-2xl shadow-2xl w-full mx-2 sm:mx-4 page-transition flex flex-col max-h-[90vh] sm:max-h-[85vh]',
           sizes[size]
         )}
       >
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 flex-shrink-0">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900">{title}</h2>
           {showCloseButton && (
             <button
               onClick={onClose}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600 min-h-[44px] min-w-[44px] flex items-center justify-center"
               aria-label="Close dialog"
             >
               <X className="h-5 w-5" />
             </button>
           )}
         </div>
-        <div className="p-6">{children}</div>
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1">{children}</div>
       </div>
     </div>
   )

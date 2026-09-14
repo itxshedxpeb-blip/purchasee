@@ -112,16 +112,16 @@ export default function PurchasesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Purchases</h1>
         <p className="text-gray-500 mt-2">View and manage purchase history</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <div className="relative">
+      <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+          <div className="relative lg:col-span-2 xl:col-span-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Search purchases..."
@@ -183,17 +183,17 @@ export default function PurchasesPage() {
 
           {/* Desktop Table */}
           <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+              <table className="w-full min-w-[900px]">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Purchase No.</th>
-                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Date</th>
-                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Project</th>
-                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Vendor</th>
-                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Delivery</th>
-                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Invoice</th>
-                    <th className="text-right py-4 px-6 text-sm font-semibold text-gray-600">Amount</th>
+                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600">Purchase No.</th>
+                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600">Date</th>
+                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600">Project</th>
+                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600">Vendor</th>
+                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600">Delivery</th>
+                    <th className="text-left py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600">Invoice</th>
+                    <th className="text-right py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-600">Amount</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -203,13 +203,13 @@ export default function PurchasesPage() {
                       onClick={() => handlePurchaseClick(purchase.id)}
                       className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
                     >
-                      <td className="py-4 px-6 text-sm font-medium text-gray-900">{purchase.purchaseNumber}</td>
-                      <td className="py-4 px-6 text-sm text-gray-600">{formatShortDate(purchase.purchaseDate)}</td>
-                      <td className="py-4 px-6 text-sm text-gray-600">{purchase.project.name}</td>
-                      <td className="py-4 px-6 text-sm text-gray-600">{purchase.vendor.name}</td>
-                      <td className="py-4 px-6 text-sm text-gray-600">{purchase.deliveryLocation}</td>
-                      <td className="py-4 px-6 text-sm text-gray-600">{purchase.invoiceNumber || '-'}</td>
-                      <td className="py-4 px-6 text-sm font-semibold text-gray-900 text-right">
+                      <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-medium text-gray-900">{purchase.purchaseNumber}</td>
+                      <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-600">{formatShortDate(purchase.purchaseDate)}</td>
+                      <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-600">{purchase.project.name}</td>
+                      <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-600">{purchase.vendor.name}</td>
+                      <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-600">{purchase.deliveryLocation}</td>
+                      <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm text-gray-600">{purchase.invoiceNumber || '-'}</td>
+                      <td className="py-3 sm:py-4 px-3 sm:px-6 text-xs sm:text-sm font-semibold text-gray-900 text-right">
                         {formatCurrency(purchase.totalAmount)}
                       </td>
                     </tr>
@@ -220,8 +220,8 @@ export default function PurchasesPage() {
 
             {/* Pagination */}
             {pagination.totalPages > 1 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
-                <p className="text-sm text-gray-500">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 px-4 sm:px-6 py-4 border-t border-gray-200">
+                <p className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
                   Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
                   {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results
                 </p>
@@ -249,8 +249,8 @@ export default function PurchasesPage() {
 
           {/* Mobile Pagination */}
           {pagination.totalPages > 1 && (
-            <div className="md:hidden flex items-center justify-between py-4">
-              <p className="text-sm text-gray-500">
+            <div className="md:hidden flex items-center justify-between py-4 px-2">
+              <p className="text-xs text-gray-500">
                 {((pagination.page - 1) * pagination.limit) + 1}-{Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total}
               </p>
               <div className="flex gap-2">

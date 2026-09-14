@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, KeyboardEvent } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, PlusCircle, FileText, FolderOpen, Building2, Menu, X } from 'lucide-react'
@@ -19,6 +19,8 @@ export default function GlassNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const previousPathnameRef = useRef<string | null>(null)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,16 +39,35 @@ export default function GlassNavbar() {
     previousPathnameRef.current = pathname
   }, [pathname])
 
-  // Prevent body scroll when mobile menu is open
+  // Prevent body scroll when mobile menu is open + focus management
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden'
+      closeButtonRef.current?.focus()
     } else {
       document.body.style.overflow = 'unset'
+      menuButtonRef.current?.focus()
     }
 
     return () => {
       document.body.style.overflow = 'unset'
+    }
+  }, [isMobileMenuOpen])
+
+  // ESC key to close menu
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('keydown', handleKeyDown as any)
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown as any)
     }
   }, [isMobileMenuOpen])
 
@@ -82,7 +103,7 @@ export default function GlassNavbar() {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                      'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 min-h-[44px]',
                       isActive
                         ? 'bg-blue-50 text-blue-700'
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
@@ -97,9 +118,11 @@ export default function GlassNavbar() {
 
             {/* Mobile Menu Button */}
             <button
+              ref={menuButtonRef}
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
               aria-label="Open menu"
+              aria-expanded={isMobileMenuOpen}
             >
               <Menu className="h-6 w-6 text-gray-600" />
             </button>
@@ -118,7 +141,9 @@ export default function GlassNavbar() {
           />
 
           {/* Mobile Menu */}
-          <div className="fixed inset-y-0 left-0 w-full max-w-sm bg-white z-50 md:hidden shadow-2xl">
+          <div
+            className="fixed inset-y-0 left-0 w-full max-w-sm sm:max-w-xs bg-white z-50 md:hidden shadow-2xl"
+          >
             <div className="flex flex-col h-full">
               {/* Mobile Header */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200">
@@ -131,8 +156,9 @@ export default function GlassNavbar() {
                   </span>
                 </div>
                 <button
+                  ref={closeButtonRef}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                   aria-label="Close menu"
                 >
                   <X className="h-6 w-6 text-gray-600" />
@@ -151,7 +177,7 @@ export default function GlassNavbar() {
                         key={item.href}
                         href={item.href}
                         className={cn(
-                          'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
+                          'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 min-h-[48px]',
                           isActive
                             ? 'bg-blue-50 text-blue-700'
                             : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'

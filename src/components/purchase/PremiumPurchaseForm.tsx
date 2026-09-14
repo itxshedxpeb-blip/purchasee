@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
 import Select from '@/components/common/Select'
+import Dialog from '@/components/common/Dialog'
 import { formatCurrency } from '@/lib/utils'
 import { Trash2, Plus } from 'lucide-react'
 
@@ -270,7 +271,7 @@ export default function PremiumPurchaseForm() {
   return (
     <div className="max-w-4xl mx-auto pb-24 md:pb-8">
       {/* Page Header */}
-      <div className="mb-6 md:mb-8">
+      <div className="mb-4 sm:mb-6 md:mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">New Purchase</h1>
         <p className="text-gray-500 mt-2">Record a new purchase entry</p>
       </div>
@@ -294,12 +295,12 @@ export default function PremiumPurchaseForm() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Purchase Information */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">Purchase Information</h2>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Purchase Information</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <Input
               label="Purchase Date"
               type="date"
@@ -367,9 +368,9 @@ export default function PremiumPurchaseForm() {
 
           {/* Project Auto-Fill Display */}
           {selectedProject && (
-            <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-100">
-              <h3 className="text-sm font-semibold text-blue-900 mb-3">Project Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50 rounded-xl border border-blue-100">
+              <h3 className="text-xs sm:text-sm font-semibold text-blue-900 mb-2 sm:mb-3">Project Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
                 <div>
                   <p className="text-blue-700 mb-1">Site Code</p>
                   <p className="font-medium text-blue-900">{selectedProject.siteCode}</p>
@@ -386,7 +387,7 @@ export default function PremiumPurchaseForm() {
             </div>
           )}
 
-          <div className="mt-6">
+          <div className="mt-4 sm:mt-6">
             <Input
               label="Remarks (Optional)"
               id="remarks"
@@ -398,17 +399,17 @@ export default function PremiumPurchaseForm() {
         </div>
 
         {/* Purchase Items */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-6">Items</h2>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Items</h2>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {items.map((item) => (
               <div
                 key={item.id}
-                className="border border-gray-200 rounded-xl p-4 md:p-6 space-y-4 hover:border-gray-300 transition-colors"
+                className="border border-gray-200 rounded-xl p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4 hover:border-gray-300 transition-colors"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 space-y-3 sm:space-y-4 min-w-0">
                     <Input
                       label="Item Name"
                       value={item.itemName}
@@ -425,7 +426,7 @@ export default function PremiumPurchaseForm() {
                       fullWidth
                     />
 
-                    <div className="grid grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
                         <input
@@ -434,7 +435,7 @@ export default function PremiumPurchaseForm() {
                           value={item.quantity || ''}
                           onChange={(e) => handleItemChange(item.id, 'quantity', parseFloat(e.target.value) || 0)}
                           placeholder="0"
-                          className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
                       <div>
@@ -444,7 +445,7 @@ export default function PremiumPurchaseForm() {
                           value={item.unit}
                           onChange={(e) => handleItemChange(item.id, 'unit', e.target.value)}
                           placeholder="PCS"
-                          className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
                       <div>
@@ -455,13 +456,13 @@ export default function PremiumPurchaseForm() {
                           value={item.rate || ''}
                           onChange={(e) => handleItemChange(item.id, 'rate', parseFloat(e.target.value) || 0)}
                           placeholder="0"
-                          className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 sm:px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Amount</label>
-                        <div className="h-10 flex items-center px-4 bg-gray-50 rounded-lg border border-gray-200">
-                          <span className="text-sm font-semibold text-gray-900">{formatCurrency(item.amount)}</span>
+                        <div className="h-10 flex items-center px-3 sm:px-4 bg-gray-50 rounded-lg border border-gray-200">
+                          <span className="text-xs sm:text-sm font-semibold text-gray-900">{formatCurrency(item.amount)}</span>
                         </div>
                       </div>
                     </div>
@@ -470,10 +471,10 @@ export default function PremiumPurchaseForm() {
                   <button
                     type="button"
                     onClick={() => removeItem(item.id)}
-                    className="p-2 rounded-lg hover:bg-red-50 text-red-500 hover:text-red-700 transition-colors flex-shrink-0"
+                    className="p-2 rounded-lg hover:bg-red-50 text-red-500 hover:text-red-700 transition-colors flex-shrink-0 min-h-[40px] min-w-[40px]"
                     aria-label="Remove item"
                   >
-                    <Trash2 className="h-5 w-5" />
+                    <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                   </button>
                 </div>
               </div>
@@ -483,7 +484,7 @@ export default function PremiumPurchaseForm() {
           <button
             type="button"
             onClick={addItem}
-            className="mt-6 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 font-medium"
+            className="mt-4 sm:mt-6 w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 font-medium"
           >
             <Plus className="h-5 w-5" />
             Add Item
@@ -513,7 +514,7 @@ export default function PremiumPurchaseForm() {
             <span className="text-2xl font-bold text-gray-900">{formatCurrency(calculateTotal())}</span>
           </div>
           <Button
-            type="submit"
+            type="button"
             onClick={handleSubmit}
             isLoading={loading}
             fullWidth
@@ -539,82 +540,88 @@ export default function PremiumPurchaseForm() {
       </div>
 
       {/* Create Project Dialog */}
-      {showProjectDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setShowProjectDialog(false)}
+      <Dialog
+        isOpen={showProjectDialog}
+        onClose={() => {
+          setShowProjectDialog(false)
+          setNewProjectName('')
+          setNewProjectSiteCode('')
+          setNewProjectClientName('')
+        }}
+        title="Create Project"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <Input
+            label="Site Code"
+            value={newProjectSiteCode}
+            onChange={(e) => setNewProjectSiteCode(e.target.value)}
+            placeholder="e.g., ABC-001"
           />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 page-transition">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Create Project</h3>
-            <div className="space-y-4">
-              <Input
-                label="Site Code"
-                value={newProjectSiteCode}
-                onChange={(e) => setNewProjectSiteCode(e.target.value)}
-                placeholder="e.g., ABC-001"
-              />
-              <Input
-                label="Project Name"
-                value={newProjectName}
-                onChange={(e) => setNewProjectName(e.target.value)}
-                placeholder="Enter project name"
-              />
-              <Input
-                label="Client Name"
-                value={newProjectClientName}
-                onChange={(e) => setNewProjectClientName(e.target.value)}
-                placeholder="Enter client name"
-              />
-            </div>
-            <div className="flex justify-end gap-4 mt-6">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowProjectDialog(false)
-                  setNewProjectName('')
-                  setNewProjectSiteCode('')
-                  setNewProjectClientName('')
-                }}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleCreateProject}>Create Project</Button>
-            </div>
-          </div>
+          <Input
+            label="Project Name"
+            value={newProjectName}
+            onChange={(e) => setNewProjectName(e.target.value)}
+            placeholder="Enter project name"
+          />
+          <Input
+            label="Client Name"
+            value={newProjectClientName}
+            onChange={(e) => setNewProjectClientName(e.target.value)}
+            placeholder="Enter client name"
+          />
         </div>
-      )}
+        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-6">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowProjectDialog(false)
+              setNewProjectName('')
+              setNewProjectSiteCode('')
+              setNewProjectClientName('')
+            }}
+            fullWidth
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleCreateProject} fullWidth>
+            Create Project
+          </Button>
+        </div>
+      </Dialog>
 
       {/* Create Vendor Dialog */}
-      {showVendorDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setShowVendorDialog(false)}
-          />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 page-transition">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Create Vendor</h3>
-            <Input
-              label="Vendor Name"
-              value={newVendorName}
-              onChange={(e) => setNewVendorName(e.target.value)}
-              placeholder="Enter vendor name"
-            />
-            <div className="flex justify-end gap-4 mt-6">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowVendorDialog(false)
-                  setNewVendorName('')
-                }}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleCreateVendor}>Create Vendor</Button>
-            </div>
-          </div>
+      <Dialog
+        isOpen={showVendorDialog}
+        onClose={() => {
+          setShowVendorDialog(false)
+          setNewVendorName('')
+        }}
+        title="Create Vendor"
+        size="sm"
+      >
+        <Input
+          label="Vendor Name"
+          value={newVendorName}
+          onChange={(e) => setNewVendorName(e.target.value)}
+          placeholder="Enter vendor name"
+        />
+        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-6">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowVendorDialog(false)
+              setNewVendorName('')
+            }}
+            fullWidth
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleCreateVendor} fullWidth>
+            Create Vendor
+          </Button>
         </div>
-      )}
+      </Dialog>
     </div>
   )
 }
