@@ -5,8 +5,10 @@ import { useRouter, useParams } from 'next/navigation'
 import { formatCurrency, formatShortDate } from '@/lib/utils'
 import LoadingState from '@/components/common/LoadingState'
 import Button from '@/components/common/Button'
-import { ArrowLeft, Building2 } from 'lucide-react'
+import Dialog from '@/components/common/Dialog'
+import { ArrowLeft, Building2, Trash2 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/common/Card'
+import { useToast } from '@/components/common/ToastProvider'
 
 interface Purchase {
   id: string
@@ -28,8 +30,11 @@ interface VendorDetails {
 export default function VendorDetailsPage() {
   const router = useRouter()
   const params = useParams()
+  const { showToast } = useToast()
   const [loading, setLoading] = useState(true)
   const [vendor, setVendor] = useState<VendorDetails | null>(null)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     async function fetchVendorDetails() {
@@ -72,6 +77,30 @@ export default function VendorDetailsPage() {
     fetchVendorDetails()
   }, [params.id, router])
 
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      const response = await fetch(`/api/vendors?id=${params.id}`, {
+        method: 'DELETE',
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        showToast('success', data.message || 'Vendor deleted successfully')
+        router.push('/vendors')
+      } else {
+        showToast('error', data.message || 'Failed to delete vendor')
+      }
+    } catch (error) {
+      console.error('Error deleting vendor:', error)
+      showToast('error', 'Failed to delete vendor')
+    } finally {
+      setDeleting(false)
+      setShowDeleteDialog(false)
+    }
+  }
+
   if (loading) {
     return <LoadingState />
   }
@@ -100,6 +129,15 @@ export default function VendorDetailsPage() {
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 truncate">{vendor.name}</h1>
           <p className="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base">{vendor.purchaseCount} purchases</p>
         </div>
+        <Button
+          variant="danger"
+          size="sm"
+          onClick={() => setShowDeleteDialog(true)}
+          className="min-h-[44px] min-w-[44px] flex-shrink-0"
+        >
+          <Trash2 className="h-4 w-4" />
+          <span className="hidden sm:inline ml-2">Delete</span>
+        </Button>
       </div>
 
       {/* Summary Card */}
@@ -189,6 +227,39 @@ export default function VendorDetailsPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        title="Delete Vendor"
+        size="sm"
+      >
+        <p className="text-gray-600 mb-6 text-sm sm:text-base">
+          {vendor.purchaseCount > 0
+            ? `Are you sure you want to delete this vendor? This will also delete ${vendor.purchaseCount} associated purchase(s). This action cannot be undone.`
+            : 'Are you sure you want to delete this vendor? This action cannot be undone.'
+          }
+        </p>
+        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
+          <Button
+            variant="secondary"
+            onClick={() => setShowDeleteDialog(false)}
+            disabled={deleting}
+            fullWidth
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+            isLoading={deleting}
+            fullWidth
+          >
+            Delete
+          </Button>
+        </div>
+      </Dialog>
     </div>
   )
 }

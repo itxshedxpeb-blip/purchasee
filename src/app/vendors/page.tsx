@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import LoadingState from '@/components/common/LoadingState'
 import EmptyState from '@/components/common/EmptyState'
-import { Building2, Plus } from 'lucide-react'
+import { Building2, Plus, Trash2 } from 'lucide-react'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
 import Dialog from '@/components/common/Dialog'
 import { Card, CardContent } from '@/components/common/Card'
+import { useToast } from '@/components/common/ToastProvider'
 
 interface Vendor {
   id: string
@@ -20,13 +21,17 @@ interface Vendor {
 
 export default function VendorsPage() {
   const router = useRouter()
+  const { showToast } = useToast()
   const [loading, setLoading] = useState(true)
   const [vendors, setVendors] = useState<Vendor[]>([])
   const [showCreateDialog, setShowCreateDialog] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [vendorToDelete, setVendorToDelete] = useState<Vendor | null>(null)
   const [newVendorName, setNewVendorName] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [creating, setCreating] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     async function fetchVendors() {
@@ -86,6 +91,39 @@ export default function VendorsPage() {
     router.push(`/vendors/${id}`)
   }
 
+  const handleDeleteClick = (vendor: Vendor, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setVendorToDelete(vendor)
+    setShowDeleteDialog(true)
+  }
+
+  const handleDelete = async () => {
+    if (!vendorToDelete) return
+
+    setDeleting(true)
+    try {
+      const response = await fetch(`/api/vendors?id=${vendorToDelete.id}`, {
+        method: 'DELETE',
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setVendors(vendors.filter(v => v.id !== vendorToDelete.id))
+        showToast('success', data.message || 'Vendor deleted successfully')
+      } else {
+        showToast('error', data.message || 'Failed to delete vendor')
+      }
+    } catch (error) {
+      console.error('Error deleting vendor:', error)
+      showToast('error', 'Failed to delete vendor')
+    } finally {
+      setDeleting(false)
+      setShowDeleteDialog(false)
+      setVendorToDelete(null)
+    }
+  }
+
   if (loading) {
     return <LoadingState />
   }
@@ -118,13 +156,20 @@ export default function VendorsPage() {
             <Card
               key={vendor.id}
               onClick={() => handleVendorClick(vendor.id)}
-              className="hover:shadow-lg cursor-pointer transition-all duration-200 hover:border-orange-300"
+              className="hover:shadow-lg cursor-pointer transition-all duration-200 hover:border-orange-300 group"
             >
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-start justify-between mb-3 sm:mb-4">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
                     <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-orange-600" />
                   </div>
+                  <button
+                    onClick={(e) => handleDeleteClick(vendor, e)}
+                    className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 min-h-[36px] min-w-[36px]"
+                    aria-label="Delete vendor"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 truncate">{vendor.name}</h3>
                 <div className="space-y-1.5 sm:space-y-2">
@@ -181,6 +226,47 @@ export default function VendorsPage() {
           </Button>
           <Button onClick={handleCreateVendor} isLoading={creating} fullWidth>
             Create Vendor
+          </Button>
+        </div>
+      </Dialog>
+
+      {/* Delete Vendor Dialog */}
+      <Dialog
+        isOpen={showDeleteDialog}
+        onClose={() => {
+          setShowDeleteDialog(false)
+          setVendorToDelete(null)
+        }}
+        title="Delete Vendor"
+        size="sm"
+      >
+        <p className="text-gray-600 mb-6 text-sm sm:text-base">
+          {vendorToDelete && vendorToDelete._count.purchases > 0
+            ? `Are you sure you want to delete "${vendorToDelete.name}"? This will also delete ${vendorToDelete._count.purchases} associated purchase(s). This action cannot be undone.`
+            : vendorToDelete
+            ? `Are you sure you want to delete "${vendorToDelete.name}"? This action cannot be undone.`
+            : 'Are you sure you want to delete this vendor? This action cannot be undone.'
+          }
+        </p>
+        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowDeleteDialog(false)
+              setVendorToDelete(null)
+            }}
+            disabled={deleting}
+            fullWidth
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+            isLoading={deleting}
+            fullWidth
+          >
+            Delete
           </Button>
         </div>
       </Dialog>

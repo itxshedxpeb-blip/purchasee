@@ -71,7 +71,7 @@ export class ProjectService {
   }
 
   async deleteProject(id: string) {
-    // Check if project has purchases
+    // Check if project exists and get purchase count for warning
     const projectWithPurchases = await prisma.project.findUnique({
       where: { id },
       include: {
@@ -85,14 +85,13 @@ export class ProjectService {
       throw new Error('Project not found')
     }
 
-    if (projectWithPurchases._count.purchases > 0) {
-      throw new Error('Cannot delete project with existing purchases')
-    }
+    const purchaseCount = projectWithPurchases._count.purchases
 
     try {
-      return await prisma.project.delete({
+      await prisma.project.delete({
         where: { id },
       })
+      return { deleted: true, purchaseCount }
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {

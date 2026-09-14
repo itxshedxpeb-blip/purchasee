@@ -49,8 +49,8 @@ model Purchase {
   subtotal         Decimal        @db.Decimal(18,2)
   totalAmount      Decimal        @db.Decimal(18,2)
 
-  project          Project        @relation(fields: [projectId], references: [id])
-  vendor           Vendor         @relation(fields: [vendorId], references: [id])
+  project          Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  vendor           Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   items            PurchaseItem[]
 

@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import LoadingState from '@/components/common/LoadingState'
 import EmptyState from '@/components/common/EmptyState'
-import { FolderOpen, Plus } from 'lucide-react'
+import { FolderOpen, Plus, Trash2 } from 'lucide-react'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
 import Dialog from '@/components/common/Dialog'
 import { Card, CardContent } from '@/components/common/Card'
+import { useToast } from '@/components/common/ToastProvider'
 
 interface Project {
   id: string
@@ -22,15 +23,19 @@ interface Project {
 
 export default function ProjectsPage() {
   const router = useRouter()
+  const { showToast } = useToast()
   const [loading, setLoading] = useState(true)
   const [projects, setProjects] = useState<Project[]>([])
   const [showCreateDialog, setShowCreateDialog] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null)
   const [newProjectName, setNewProjectName] = useState('')
   const [newProjectSiteCode, setNewProjectSiteCode] = useState('')
   const [newProjectClientName, setNewProjectClientName] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [creating, setCreating] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     async function fetchProjects() {
@@ -104,6 +109,39 @@ export default function ProjectsPage() {
     router.push(`/projects/${id}`)
   }
 
+  const handleDeleteClick = (project: Project, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setProjectToDelete(project)
+    setShowDeleteDialog(true)
+  }
+
+  const handleDelete = async () => {
+    if (!projectToDelete) return
+
+    setDeleting(true)
+    try {
+      const response = await fetch(`/api/projects?id=${projectToDelete.id}`, {
+        method: 'DELETE',
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setProjects(projects.filter(p => p.id !== projectToDelete.id))
+        showToast('success', data.message || 'Project deleted successfully')
+      } else {
+        showToast('error', data.message || 'Failed to delete project')
+      }
+    } catch (error) {
+      console.error('Error deleting project:', error)
+      showToast('error', 'Failed to delete project')
+    } finally {
+      setDeleting(false)
+      setShowDeleteDialog(false)
+      setProjectToDelete(null)
+    }
+  }
+
   if (loading) {
     return <LoadingState />
   }
@@ -136,13 +174,20 @@ export default function ProjectsPage() {
             <Card
               key={project.id}
               onClick={() => handleProjectClick(project.id)}
-              className="hover:shadow-lg cursor-pointer transition-all duration-200 hover:border-blue-300"
+              className="hover:shadow-lg cursor-pointer transition-all duration-200 hover:border-blue-300 group"
             >
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-start justify-between mb-3 sm:mb-4">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
                     <FolderOpen className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
                   </div>
+                  <button
+                    onClick={(e) => handleDeleteClick(project, e)}
+                    className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100 min-h-[36px] min-w-[36px]"
+                    aria-label="Delete project"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
                 <h3 className="text-xs sm:text-sm font-semibold text-blue-600 mb-1 truncate">{project.siteCode}</h3>
                 <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3 truncate">{project.name}</h2>
@@ -222,6 +267,47 @@ export default function ProjectsPage() {
           </Button>
           <Button onClick={handleCreateProject} isLoading={creating} fullWidth>
             Create Project
+          </Button>
+        </div>
+      </Dialog>
+
+      {/* Delete Project Dialog */}
+      <Dialog
+        isOpen={showDeleteDialog}
+        onClose={() => {
+          setShowDeleteDialog(false)
+          setProjectToDelete(null)
+        }}
+        title="Delete Project"
+        size="sm"
+      >
+        <p className="text-gray-600 mb-6 text-sm sm:text-base">
+          {projectToDelete && projectToDelete._count.purchases > 0
+            ? `Are you sure you want to delete "${projectToDelete.name}"? This will also delete ${projectToDelete._count.purchases} associated purchase(s). This action cannot be undone.`
+            : projectToDelete
+            ? `Are you sure you want to delete "${projectToDelete.name}"? This action cannot be undone.`
+            : 'Are you sure you want to delete this project? This action cannot be undone.'
+          }
+        </p>
+        <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowDeleteDialog(false)
+              setProjectToDelete(null)
+            }}
+            disabled={deleting}
+            fullWidth
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+            isLoading={deleting}
+            fullWidth
+          >
+            Delete
           </Button>
         </div>
       </Dialog>

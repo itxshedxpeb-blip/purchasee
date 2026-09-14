@@ -115,9 +115,13 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    await vendorService.deleteVendor(id)
+    const result = await vendorService.deleteVendor(id)
 
-    return NextResponse.json({ success: true, message: 'Vendor deleted successfully' })
+    const message = result.purchaseCount > 0
+      ? `Vendor and ${result.purchaseCount} associated purchase(s) deleted successfully`
+      : 'Vendor deleted successfully'
+
+    return NextResponse.json({ success: true, message, purchaseCount: result.purchaseCount })
   } catch (error: unknown) {
     console.error('Error deleting vendor:', error)
     return NextResponse.json(

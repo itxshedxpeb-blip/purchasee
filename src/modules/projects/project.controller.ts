@@ -115,9 +115,13 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    await projectService.deleteProject(id)
+    const result = await projectService.deleteProject(id)
 
-    return NextResponse.json({ success: true, message: 'Project deleted successfully' })
+    const message = result.purchaseCount > 0
+      ? `Project and ${result.purchaseCount} associated purchase(s) deleted successfully`
+      : 'Project deleted successfully'
+
+    return NextResponse.json({ success: true, message, purchaseCount: result.purchaseCount })
   } catch (error: unknown) {
     console.error('Error deleting project:', error)
     return NextResponse.json(

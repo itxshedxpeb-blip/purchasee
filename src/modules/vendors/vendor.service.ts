@@ -63,7 +63,7 @@ export class VendorService {
   }
 
   async deleteVendor(id: string) {
-    // Check if vendor has purchases
+    // Check if vendor exists and get purchase count for warning
     const vendorWithPurchases = await prisma.vendor.findUnique({
       where: { id },
       include: {
@@ -77,14 +77,13 @@ export class VendorService {
       throw new Error('Vendor not found')
     }
 
-    if (vendorWithPurchases._count.purchases > 0) {
-      throw new Error('Cannot delete vendor with existing purchases')
-    }
+    const purchaseCount = vendorWithPurchases._count.purchases
 
     try {
-      return await prisma.vendor.delete({
+      await prisma.vendor.delete({
         where: { id },
       })
+      return { deleted: true, purchaseCount }
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
