@@ -1,69 +1,315 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { useEffect, useState } from 'react'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/common/Card'
+import { formatCurrency, formatShortDate } from '@/lib/utils'
+import LoadingState from '@/components/common/LoadingState'
+import { StatCardSkeleton, TableRowSkeleton } from '@/components/common/SkeletonCard'
+import { TrendingUp, ShoppingCart, FolderOpen, Building2, ArrowRight } from 'lucide-react'
+import Button from '@/components/common/Button'
+
+interface DashboardStats {
+  totalPurchase: number
+  purchaseEntries: number
+  projectCount: number
+  vendorCount: number
+  projectTotals: Array<{
+    id: string
+    name: string
+    purchaseCount: number
+    totalAmount: number
+  }>
+  vendorTotals: Array<{
+    id: string
+    name: string
+    purchaseCount: number
+    totalAmount: number
+  }>
+  recentPurchases: Array<{
+    id: string
+    purchaseNumber: string
+    purchaseDate: string
+    project: string
+    vendor: string
+    totalAmount: number
+  }>
+  monthlyTotals: Array<{
+    month: number
+    monthName: string
+    totalAmount: number
+  }>
+}
+
+export default function Dashboard() {
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const response = await fetch('/api/dashboard')
+        const data = await response.json()
+        if (data.success) {
+          setStats(data.data)
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStats()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-500 mt-2">Overview of your purchase activity</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => <StatCardSkeleton key={i} />)}
+        </div>
+      </div>
+    )
+  }
+
+  if (!stats) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-gray-500">Unable to load dashboard data</p>
+      </div>
+    )
+  }
+
+  const summaryCards = [
+    {
+      title: 'Total Purchase',
+      value: formatCurrency(stats.totalPurchase),
+      icon: TrendingUp,
+      color: 'from-blue-500 to-blue-600',
+      bgColor: 'bg-blue-50',
+    },
+    {
+      title: 'Purchase Entries',
+      value: stats.purchaseEntries.toString(),
+      icon: ShoppingCart,
+      color: 'from-green-500 to-green-600',
+      bgColor: 'bg-green-50',
+    },
+    {
+      title: 'Projects',
+      value: stats.projectCount.toString(),
+      icon: FolderOpen,
+      color: 'from-purple-500 to-purple-600',
+      bgColor: 'bg-purple-50',
+    },
+    {
+      title: 'Vendors',
+      value: stats.vendorCount.toString(),
+      icon: Building2,
+      color: 'from-orange-500 to-orange-600',
+      bgColor: 'bg-orange-50',
+    },
+  ]
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="space-y-6 md:space-y-8">
+      <div>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-500 mt-2">Overview of your purchase activity</p>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        {summaryCards.map((card) => {
+          const Icon = card.icon
+          return (
+            <Card key={card.title} className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-500 mb-1">{card.title}</p>
+                    <p className="text-2xl md:text-3xl font-bold text-gray-900">{card.value}</p>
+                  </div>
+                  <div className={`w-12 h-12 ${card.bgColor} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                    <Icon className="h-6 w-6 bg-gradient-to-br text-gray-700" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Project-wise Purchase */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Project-wise Purchase</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {stats.projectTotals.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">No projects yet</div>
+            ) : (
+              <div className="space-y-4">
+                {stats.projectTotals.slice(0, 5).map((project) => (
+                  <div key={project.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">{project.name}</p>
+                      <p className="text-sm text-gray-500">{project.purchaseCount} purchases</p>
+                    </div>
+                    <p className="font-semibold text-gray-900">{formatCurrency(project.totalAmount)}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Vendor-wise Purchase */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Vendor-wise Purchase</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {stats.vendorTotals.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">No vendors yet</div>
+            ) : (
+              <div className="space-y-4">
+                {stats.vendorTotals.slice(0, 5).map((vendor) => (
+                  <div key={vendor.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">{vendor.name}</p>
+                      <p className="text-sm text-gray-500">{vendor.purchaseCount} purchases</p>
+                    </div>
+                    <p className="font-semibold text-gray-900">{formatCurrency(vendor.totalAmount)}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Purchases */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Purchases</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {stats.recentPurchases.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">No purchases yet</div>
+          ) : (
+            <>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-4">
+                {stats.recentPurchases.map((purchase) => (
+                  <div key={purchase.id} className="border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <p className="font-semibold text-gray-900">{purchase.purchaseNumber}</p>
+                        <p className="text-sm text-gray-500">{formatShortDate(purchase.purchaseDate)}</p>
+                      </div>
+                      <p className="font-bold text-blue-600">{formatCurrency(purchase.totalAmount)}</p>
+                    </div>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Project</span>
+                        <span className="text-gray-900">{purchase.project}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Vendor</span>
+                        <span className="text-gray-900">{purchase.vendor}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Purchase No.</th>
+                      <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Date</th>
+                      <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Project</th>
+                      <th className="text-left py-4 px-6 text-sm font-semibold text-gray-600">Vendor</th>
+                      <th className="text-right py-4 px-6 text-sm font-semibold text-gray-600">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.recentPurchases.map((purchase) => (
+                      <tr key={purchase.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                        <td className="py-4 px-6 text-sm font-medium text-gray-900">{purchase.purchaseNumber}</td>
+                        <td className="py-4 px-6 text-sm text-gray-600">{formatShortDate(purchase.purchaseDate)}</td>
+                        <td className="py-4 px-6 text-sm text-gray-600">{purchase.project}</td>
+                        <td className="py-4 px-6 text-sm text-gray-600">{purchase.vendor}</td>
+                        <td className="py-4 px-6 text-sm font-semibold text-gray-900 text-right">
+                          {formatCurrency(purchase.totalAmount)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Monthly Purchase Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Monthly Purchase</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {stats.monthlyTotals.every((m) => m.totalAmount === 0) ? (
+            <div className="text-center py-8 text-gray-500">No data available</div>
+          ) : (
+            <div className="space-y-4">
+              {stats.monthlyTotals.map((month) => (
+                <div key={month.month} className="flex items-center gap-4">
+                  <div className="w-16 text-sm font-medium text-gray-600">{month.monthName}</div>
+                  <div className="flex-1 bg-gray-100 rounded-full h-10 overflow-hidden">
+                    <div
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full flex items-center justify-end pr-4 transition-all duration-500"
+                      style={{
+                        width: `${Math.min((month.totalAmount / Math.max(...stats.monthlyTotals.map(m => m.totalAmount))) * 100, 100)}%`,
+                      }}
+                    >
+                      {month.totalAmount > 0 && (
+                        <span className="text-xs font-semibold text-white">
+                          {formatCurrency(month.totalAmount)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Quick Actions */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <Button fullWidth size="lg" onClick={() => window.location.href = '/new-purchase'}>
+          <ShoppingCart className="h-5 w-5" />
+          <span className="ml-2">New Purchase</span>
+        </Button>
+        <Button variant="secondary" fullWidth size="lg" onClick={() => window.location.href = '/projects'}>
+          <FolderOpen className="h-5 w-5" />
+          <span className="ml-2">View Projects</span>
+        </Button>
+        <Button variant="secondary" fullWidth size="lg" onClick={() => window.location.href = '/vendors'}>
+          <Building2 className="h-5 w-5" />
+          <span className="ml-2">View Vendors</span>
+        </Button>
+      </div>
     </div>
-  );
+  )
 }
